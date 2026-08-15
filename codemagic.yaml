@@ -5,7 +5,7 @@ workflows:
     instance_type: mac_mini_m2
     environment:
       groups:
-        - base44_secrets
+        - base64
       java: 21
       node: 22
       vars:
