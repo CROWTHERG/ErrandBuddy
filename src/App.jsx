@@ -44,7 +44,7 @@ import Tutorial from '@/components/Tutorial';
 import NotificationListener from '@/components/NotificationListener';
 import LocationGate from '@/components/LocationGate';
 
-const ADMIN_EMAIL = 'techcrowther@gmail.com';
+const ADMIN_EMAIL = 'ajayihammed356@gmail.com';
 
 function AppShell() {
   const { user } = useAuth();

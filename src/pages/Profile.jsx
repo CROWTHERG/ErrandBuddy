@@ -11,7 +11,7 @@ import { MapPin, Settings, Shield, HelpCircle, FileText, LogOut, CheckCircle, Pa
 import LiveMap from '@/components/orders/LiveMap';
 
 export default function Profile() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const { location, locationInfo } = useGeoLocation();
 
   const { data: orders = [] } = useQuery({
@@ -103,7 +103,7 @@ export default function Profile() {
         </Link>
         <Card
           className="p-3 flex items-center gap-3 hover:bg-destructive/10 transition-colors cursor-pointer"
-          onClick={() => base44.auth.logout()}
+          onClick={() => logout()}
         >
           <LogOut className="w-5 h-5 text-destructive" />
           <span className="text-sm font-medium text-destructive">Logout</span>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
@@ -7,9 +7,23 @@ import { Label } from "@/components/ui/label";
 import { Lock, Loader2, AlertTriangle } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 
+// Your real production domain — update this if it ever changes
+const CANONICAL_HOST = "errand-buddy-gamma.vercel.app";
+
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
   const resetToken = searchParams.get("token");
+
+  // If this page is being viewed on Base44's hosted domain (from the
+  // reset-password email), bounce to the real production domain,
+  // preserving the path and token.
+  useEffect(() => {
+    if (window.location.hostname !== CANONICAL_HOST) {
+      window.location.replace(
+        `https://${CANONICAL_HOST}${window.location.pathname}${window.location.search}`
+      );
+    }
+  }, []);
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

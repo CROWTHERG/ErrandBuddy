@@ -1,7 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Package } from "lucide-react";
 
+// Your real production domain — update this if it ever changes
+const CANONICAL_HOST = "errand-buddy-gamma.vercel.app";
+
 export default function AuthLayout({ icon: Icon, title, subtitle, footer, children }) {
+  // If we're being viewed on Base44's hosted domain (e.g. bounced here
+  // after logout, since Base44's auth backend ignores our redirect URL),
+  // immediately forward to the real production domain, preserving the
+  // path and any query params (like a reset token).
+  useEffect(() => {
+    if (window.location.hostname !== CANONICAL_HOST) {
+      window.location.replace(
+        `https://${CANONICAL_HOST}${window.location.pathname}${window.location.search}`
+      );
+    }
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col bg-background px-4">
       <div className="flex-1 flex flex-col items-center justify-center">

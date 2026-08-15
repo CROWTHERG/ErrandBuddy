@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Errand Buddy</string>
+    <string name="title_activity_main">Errand Buddy</string>
+    <string name="package_name">com.crowthertech.errandbuddy</string>
+    <string name="custom_url_scheme">com.crowthertech.errandbuddy</string>
+</resources>

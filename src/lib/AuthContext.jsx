@@ -89,13 +89,22 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = (shouldRedirect = true) => {
+    // Clear the auth token directly instead of calling base44.auth.logout(),
+    // which performs a hard redirect through Base44's hosted domain rather
+    // than honoring a redirect URL back to this app. Key names match what
+    // app-params.js itself clears via ?clear_access_token=true.
+    if (typeof window !== 'undefined') {
+      window.localStorage.removeItem('base44_access_token');
+      window.localStorage.removeItem('token');
+    }
+
     setUser(null);
     setIsAuthenticated(false);
-    
+
     if (shouldRedirect) {
-      base44.auth.logout(window.location.href);
-    } else {
-      base44.auth.logout();
+      // Full reload (not a router navigate) so the SDK client and any
+      // in-memory axios auth headers reinitialize completely clean.
+      window.location.href = '/login';
     }
   };
 
