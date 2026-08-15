@@ -1,0 +1,13 @@
+{
+  "name": "Verification",
+  "type": "object",
+  "properties": {
+    "user_email": { "type": "string" },
+    "user_name": { "type": "string" },
+    "id_card_url": { "type": "string" },
+    "profile_picture_url": { "type": "string" },
+    "status": { "type": "string", "enum": ["awaiting", "approved", "rejected"], "default": "awaiting" },
+    "admin_note": { "type": "string" }
+  },
+  "required": ["user_email", "id_card_url"]
+}

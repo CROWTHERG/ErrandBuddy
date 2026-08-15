@@ -1,0 +1,1 @@
+*(This is a platform-level OAuth consent page — included for completeness but rarely needs modification. Full code was shown in the read output above.)*

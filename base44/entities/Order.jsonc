@@ -1,0 +1,28 @@
+{
+  "name": "Order",
+  "type": "object",
+  "properties": {
+    "title": { "type": "string", "description": "Brief title of the errand" },
+    "description": { "type": "string", "description": "Detailed description of the errand" },
+    "pickup_address": { "type": "string", "description": "Address to pick up from" },
+    "delivery_address": { "type": "string", "description": "Address to deliver to" },
+    "pickup_lat": { "type": "number" },
+    "pickup_lng": { "type": "number" },
+    "delivery_lat": { "type": "number" },
+    "delivery_lng": { "type": "number" },
+    "city": { "type": "string" },
+    "country": { "type": "string" },
+    "amount": { "type": "number", "description": "Payment amount for the errand" },
+    "currency": { "type": "string", "default": "USD" },
+    "payment_method": { "type": "string", "enum": ["cash", "bank_transfer", "mobile_money"], "default": "cash" },
+    "status": { "type": "string", "enum": ["open", "accepted", "in_progress", "completed", "cancelled"], "default": "open" },
+    "payment_verified": { "type": "boolean", "default": false },
+    "creator_email": { "type": "string" },
+    "creator_name": { "type": "string" },
+    "runner_email": { "type": "string" },
+    "runner_name": { "type": "string" },
+    "creator_rated": { "type": "boolean", "default": false },
+    "runner_rated": { "type": "boolean", "default": false }
+  },
+  "required": ["title", "description", "pickup_address", "delivery_address", "amount", "payment_method", "creator_email"]
+}
