@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ArrowLeft, CheckCircle, Package, Star, Truck } from 'lucide-react';
+import ReputationCard from '@/components/profile/ReputationCard';
 
 export default function PublicProfile() {
   const navigate = useNavigate();
@@ -63,21 +64,8 @@ export default function PublicProfile() {
         <div className="py-8 text-center text-sm text-muted-foreground">Loading stats…</div>
       ) : (
         <>
-          <div className="grid grid-cols-2 gap-2 mt-4">
-            <Card className="p-4 text-center">
-              <div className="flex items-center justify-center mb-1">
-                <Star className="w-4 h-4 text-amber-500 mr-1" />
-                <span className="text-2xl font-bold">{avgRating || 'N/A'}</span>
-              </div>
-              <p className="text-[11px] text-muted-foreground">Rating ({reviews.length} reviews)</p>
-            </Card>
-            <Card className="p-4 text-center">
-              <div className="flex items-center justify-center mb-1">
-                <Truck className="w-4 h-4 text-primary mr-1" />
-                <span className="text-2xl font-bold">{deliveriesDone}</span>
-              </div>
-              <p className="text-[11px] text-muted-foreground">Deliveries Done</p>
-            </Card>
+          <div className="mt-4">
+            <ReputationCard completedDeliveries={deliveriesDone} avgRating={avgRating} totalReviews={reviews.length} />
           </div>
 
           <div className="grid grid-cols-2 gap-2 mt-2">

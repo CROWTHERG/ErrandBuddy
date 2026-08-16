@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Link } from 'react-router-dom';
 import { MapPin, Settings, Shield, HelpCircle, FileText, LogOut, CheckCircle, Package, Star } from 'lucide-react';
 import LiveMap from '@/components/orders/LiveMap';
+import ReputationCard from '@/components/profile/ReputationCard';
 
 export default function Profile() {
   const { user, logout } = useAuth();
@@ -27,6 +28,7 @@ export default function Profile() {
   });
 
   const created = orders.filter(o => o.creator_email === user?.email).length;
+  const completedDeliveries = orders.filter(o => o.runner_email === user?.email && o.status === 'completed').length;
   const completed = orders.filter(o => (o.creator_email === user?.email || o.runner_email === user?.email) && o.status === 'completed').length;
   const active = orders.filter(o => (o.creator_email === user?.email || o.runner_email === user?.email) && ['accepted', 'in_progress'].includes(o.status)).length;
   const avgRating = reviews.length ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1) : 'N/A';
@@ -54,6 +56,10 @@ export default function Profile() {
           </div>
         )}
       </Card>
+
+      <div className="mt-4">
+        <ReputationCard completedDeliveries={completedDeliveries} avgRating={avgRating} totalReviews={reviews.length} />
+      </div>
 
       <div className="grid grid-cols-4 gap-2 mt-4">
         {[

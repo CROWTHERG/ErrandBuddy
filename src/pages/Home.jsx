@@ -6,6 +6,7 @@ import OrderCard from '@/components/orders/OrderCard';
 import { Input } from '@/components/ui/input';
 import { Search, MapPin, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { isOrderExpired } from '@/lib/orderUtils';
 
 export default function Home() {
   const [search, setSearch] = useState('');
@@ -21,8 +22,8 @@ export default function Home() {
       o.title?.toLowerCase().includes(search.toLowerCase()) ||
       o.description?.toLowerCase().includes(search.toLowerCase());
     const matchesCity = !locationInfo.city || 
-      o.city?.toLowerCase() === locationInfo.city?.toLowerCase() || !o.city;
-    return matchesSearch && matchesCity;
+      o.city?.toLowerCase() === locationInfo.city?.toLowerCase();
+    return matchesSearch && matchesCity && !isOrderExpired(o);
   });
 
   return (

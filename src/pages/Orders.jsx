@@ -4,6 +4,7 @@ import { useAuth } from '@/lib/AuthContext';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import OrderCard from '@/components/orders/OrderCard';
 import { Loader2 } from 'lucide-react';
+import { isOrderExpired } from '@/lib/orderUtils';
 
 export default function Orders() {
   const { user } = useAuth();
@@ -14,9 +15,10 @@ export default function Orders() {
     enabled: !!user,
   });
 
-  const created = allOrders.filter(o => o.creator_email === user?.email);
-  const picked = allOrders.filter(o => o.runner_email === user?.email && o.status === 'completed');
-  const doing = allOrders.filter(o => o.runner_email === user?.email && (o.status === 'accepted' || o.status === 'in_progress'));
+  const created = allOrders.filter(o => o.creator_email === user?.email && !isOrderExpired(o));
+  const picked = allOrders.filter(o => o.runner_email === user?.email && o.status === 'completed' && !isOrderExpired(o));
+  const doing = allOrders.filter(o => o.runner_email === user?.email && (o.status === 'accepted' || o.status === 'in_progress') && !isOrderExpired(o));
+  const history = allOrders.filter(o => (o.creator_email === user?.email || o.runner_email === user?.email) && isOrderExpired(o));
 
   if (isLoading) {
     return (
@@ -30,10 +32,11 @@ export default function Orders() {
     <div className="px-4 py-4">
       <h2 className="text-xl font-bold mb-4">My Orders</h2>
       <Tabs defaultValue="created" className="w-full">
-        <TabsList className="w-full grid grid-cols-3 mb-4">
+        <TabsList className="w-full grid grid-cols-4 mb-4">
           <TabsTrigger value="created" className="text-xs">Created ({created.length})</TabsTrigger>
           <TabsTrigger value="picked" className="text-xs">Picked ({picked.length})</TabsTrigger>
           <TabsTrigger value="doing" className="text-xs">Doing ({doing.length})</TabsTrigger>
+          <TabsTrigger value="history" className="text-xs">History ({history.length})</TabsTrigger>
         </TabsList>
 
         <TabsContent value="created">
@@ -62,6 +65,16 @@ export default function Orders() {
           ) : (
             <div className="space-y-3">
               {doing.map(o => <OrderCard key={o.id} order={o} />)}
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="history">
+          {history.length === 0 ? (
+            <p className="text-center py-8 text-muted-foreground text-sm">No expired orders.</p>
+          ) : (
+            <div className="space-y-3">
+              {history.map(o => <OrderCard key={o.id} order={o} />)}
             </div>
           )}
         </TabsContent>

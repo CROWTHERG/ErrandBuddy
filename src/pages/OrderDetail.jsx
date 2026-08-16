@@ -7,8 +7,9 @@ import { useLocation as useGeoLocation } from '@/lib/LocationContext';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, MapPin, DollarSign, User, CheckCircle, Star, MessageCircle, Loader2 } from 'lucide-react';
+import { ArrowLeft, MapPin, DollarSign, User, CheckCircle, Star, MessageCircle, Loader2, Clock } from 'lucide-react';
 import { toast } from 'sonner';
+import { getRemainingDays } from '@/lib/orderUtils';
 import RatingDialog from '@/components/orders/RatingDialog';
 import LiveMap from '@/components/orders/LiveMap';
 
@@ -146,6 +147,20 @@ export default function OrderDetail() {
           </div>
           <Badge variant="secondary">{order.payment_method?.replace('_', ' ')}</Badge>
         </Card>
+
+        {order.valid_days && (
+          <Card className="p-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-amber-500" />
+              <span className="text-sm font-medium">
+                {getRemainingDays(order) > 0
+                  ? `${getRemainingDays(order)} day${getRemainingDays(order) !== 1 ? 's' : ''} remaining`
+                  : 'Expired'}
+              </span>
+            </div>
+            <span className="text-xs text-muted-foreground">Valid for {order.valid_days} days</span>
+          </Card>
+        )}
 
         <Card className="p-4 space-y-2">
           <div className="flex items-center gap-2">

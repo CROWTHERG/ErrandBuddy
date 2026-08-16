@@ -25,6 +25,7 @@ export default function AddOrder() {
     amount: '',
     payment_method: 'cash',
     currency: currency || 'USD',
+    valid_days: 7,
   });
 
   useEffect(() => {
@@ -130,6 +131,18 @@ export default function AddOrder() {
           <div>
             <Label className="text-xs font-medium text-muted-foreground">Payment Method</Label>
             <PaymentMethodPicker value={form.payment_method} onChange={(v) => update('payment_method', v)} />
+          </div>
+          <div>
+            <Label className="text-xs font-medium text-muted-foreground">Valid for (days) *</Label>
+            <Input
+              type="number"
+              min="1"
+              placeholder="7"
+              value={form.valid_days}
+              onChange={(e) => update('valid_days', parseInt(e.target.value) || 7)}
+              className="mt-1"
+            />
+            <p className="text-[10px] text-muted-foreground mt-1">Order expires after this many days and moves to history.</p>
           </div>
         </Card>
 
