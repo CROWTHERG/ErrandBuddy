@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
@@ -13,7 +14,11 @@ import ReputationCard from '@/components/profile/ReputationCard';
 
 export default function Profile() {
   const { user, logout } = useAuth();
-  const { location, locationInfo } = useGeoLocation();
+  const { location, locationInfo, granted, requestLocation } = useGeoLocation();
+
+  useEffect(() => {
+    if (!granted) requestLocation();
+  }, [granted, requestLocation]);
 
   const { data: orders = [] } = useQuery({
     queryKey: ['user-orders-stats', user?.email],
@@ -23,7 +28,7 @@ export default function Profile() {
 
   const { data: reviews = [] } = useQuery({
     queryKey: ['user-reviews', user?.email],
-    queryFn: () => base44.entities.Review.filter({ reviewee_email: user?.email }),
+    queryFn: () => base44.entities.Review.filter({ reviewee_email: user?.email, type: 'creator_to_runner' }),
     enabled: !!user,
   });
 

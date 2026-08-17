@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Package } from "lucide-react";
 
 // Your real production domain — update this if it ever changes
-const CANONICAL_HOST = "errand-buddy-gamma.vercel.app";
+const CANONICAL_HOST = "www.errandbuddy.name.ng";
 
 export default function AuthLayout({ icon: Icon, title, subtitle, footer, children }) {
   // If we're being viewed on Base44's hosted domain (e.g. bounced here

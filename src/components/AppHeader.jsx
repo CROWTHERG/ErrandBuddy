@@ -1,7 +1,10 @@
 import { Package, MessageCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useUnreadMessages } from '@/hooks/useUnreadMessages';
 
 export default function AppHeader() {
+  const unreadCount = useUnreadMessages();
+
   return (
     <header
       className="sticky top-0 z-40 bg-card/80 backdrop-blur-md border-b border-border"
@@ -16,6 +19,11 @@ export default function AppHeader() {
         </div>
         <Link to="/chats" className="p-2 rounded-full hover:bg-muted transition-colors relative">
           <MessageCircle className="w-5 h-5 text-muted-foreground" />
+          {unreadCount > 0 && (
+            <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold flex items-center justify-center">
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </span>
+          )}
         </Link>
       </div>
     </header>

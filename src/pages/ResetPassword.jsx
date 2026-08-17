@@ -8,7 +8,7 @@ import { Lock, Loader2, AlertTriangle } from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 
 // Your real production domain — update this if it ever changes
-const CANONICAL_HOST = "errand-buddy-gamma.vercel.app";
+const CANONICAL_HOST = "www.errandbuddy.name.ng";
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();

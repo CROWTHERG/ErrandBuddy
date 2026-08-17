@@ -17,7 +17,7 @@ export default function PublicProfile() {
 
   const { data: reviews = [], isLoading: reviewsLoading } = useQuery({
     queryKey: ['public-reviews', email],
-    queryFn: () => base44.entities.Review.filter({ reviewee_email: email }),
+    queryFn: () => base44.entities.Review.filter({ reviewee_email: email, type: 'creator_to_runner' }),
     enabled: !!email,
   });
 

@@ -14,7 +14,7 @@ import PaymentMethodPicker from '@/components/orders/PaymentMethodPicker';
 
 export default function AddOrder() {
   const { user } = useAuth();
-  const { locationInfo, currency } = useGeoLocation();
+  const { locationInfo, currency, granted, requestLocation } = useGeoLocation();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -27,6 +27,10 @@ export default function AddOrder() {
     currency: currency || 'USD',
     valid_days: 7,
   });
+
+  useEffect(() => {
+    if (!granted) requestLocation();
+  }, [granted, requestLocation]);
 
   useEffect(() => {
     if (currency) setForm((f) => ({ ...f, currency }));

@@ -52,10 +52,13 @@ export default function OrderDetail() {
   const canVerifyPayment = isRunner && order.status === 'in_progress' && !order.payment_verified;
   const canComplete = isRunner && order.status === 'accepted';
   const canRateRunner = isCreator && order.status === 'completed' && !order.creator_rated && order.runner_email;
-  const canRateCreator = isRunner && order.status === 'completed' && !order.runner_rated;
   const canChat = (isCreator || isRunner) && order.runner_email && order.status !== 'open';
 
   const handleAccept = async () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
     setActionLoading(true);
     await base44.entities.Order.update(order.id, {
       runner_email: user.email,
@@ -65,6 +68,11 @@ export default function OrderDetail() {
     toast.success('Order accepted!');
     queryClient.invalidateQueries({ queryKey: ['order', id] });
     setActionLoading(false);
+    base44.integrations.Core.SendEmail({
+      to: order.creator_email,
+      subject: `Your errand "${order.title}" was accepted!`,
+      body: `Hi ${order.creator_name || 'there'},\n\n${user.full_name || user.email} has accepted your errand "${order.title}".\n\nPickup: ${order.pickup_address}\nDelivery: ${order.delivery_address}\n\nOpen Errand Buddy to chat with your runner.`,
+    }).catch(() => {});
   };
 
   const handleStartProgress = async () => {
@@ -81,6 +89,11 @@ export default function OrderDetail() {
     toast.success('Payment verified! Order completed.');
     queryClient.invalidateQueries({ queryKey: ['order', id] });
     setActionLoading(false);
+    base44.integrations.Core.SendEmail({
+      to: order.creator_email,
+      subject: `Your errand "${order.title}" is completed!`,
+      body: `Hi ${order.creator_name || 'there'},\n\nYour errand "${order.title}" has been marked as completed and payment has been verified.\n\nDon't forget to rate your runner on Errand Buddy!`,
+    }).catch(() => {});
   };
 
   const mapCenter = location || (order.pickup_lat ? { lat: order.pickup_lat, lng: order.pickup_lng } : null);
@@ -204,11 +217,6 @@ export default function OrderDetail() {
               <Star className="w-5 h-5 mr-2" /> Rate Runner
             </Button>
           )}
-          {canRateCreator && (
-            <Button onClick={() => setRatingOpen(true)} variant="outline" className="w-full h-12 rounded-xl">
-              <Star className="w-5 h-5 mr-2" /> Rate Creator
-            </Button>
-          )}
           {canChat && (
             <Link to={`/chat/${order.id}`} className="block">
               <Button variant="secondary" className="w-full h-12 rounded-xl">
@@ -226,9 +234,9 @@ export default function OrderDetail() {
           order={order}
           reviewerEmail={user.email}
           reviewerName={user.full_name || user.email}
-          revieweeEmail={canRateRunner ? order.runner_email : order.creator_email}
-          revieweeName={canRateRunner ? order.runner_name : order.creator_name}
-          type={canRateRunner ? 'creator_to_runner' : 'runner_to_creator'}
+          revieweeEmail={order.runner_email}
+          revieweeName={order.runner_name}
+          type="creator_to_runner"
           onDone={() => queryClient.invalidateQueries({ queryKey: ['order', id] })}
         />
       )}

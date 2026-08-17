@@ -36,20 +36,44 @@ export default function Chat() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  useEffect(() => {
+    if (!user) return;
+    const toMark = messages.filter(m => !m.read && m.sender_email !== user.email);
+    if (toMark.length === 0) return;
+    Promise.all(toMark.map(m => base44.entities.ChatMessage.update(m.id, { read: true })))
+      .then(() => {
+        queryClient.invalidateQueries({ queryKey: ['unread-msgs'] });
+      })
+      .catch(() => {});
+  }, [messages, user, queryClient]);
+
   const otherParty = order?.creator_email === user?.email ? order?.runner_name : order?.creator_name;
 
   const handleSend = async () => {
     if (!message.trim()) return;
     setSending(true);
+    const msg = message.trim();
     await base44.entities.ChatMessage.create({
       order_id: orderId,
       sender_email: user.email,
       sender_name: user.full_name || user.email,
-      message: message.trim(),
+      message: msg,
     });
     setMessage('');
     queryClient.invalidateQueries({ queryKey: ['chat', orderId] });
     setSending(false);
+
+    if (order) {
+      const recipientEmail = order.creator_email === user.email ? order.runner_email : order.creator_email;
+      const recipientName = order.creator_email === user.email ? order.runner_name : order.creator_name;
+      if (recipientEmail) {
+        base44.integrations.Core.SendEmail({
+          to: recipientEmail,
+          subject: `New message from ${user.full_name || user.email}`,
+          body: `Hi ${recipientName || 'there'},\n\n${user.full_name || user.email} sent you a message about "${order.title}":\n\n"${msg}"\n\nOpen Errand Buddy to reply.`,
+        }).catch(() => {});
+      }
+    }
   };
 
   return (

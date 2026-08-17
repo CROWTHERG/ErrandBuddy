@@ -42,7 +42,7 @@ import AdminLayout from '@/components/admin/AdminLayout';
 import SplashScreen from '@/components/SplashScreen';
 import Tutorial from '@/components/Tutorial';
 import NotificationListener from '@/components/NotificationListener';
-import LocationGate from '@/components/LocationGate';
+import InstallPrompt from '@/components/InstallPrompt';
 
 const ADMIN_EMAIL = 'ajayihammed356@gmail.com';
 
@@ -72,38 +72,40 @@ function AppShell() {
   return (
     <LocationProvider>
       <NotificationListener />
-      <LocationGate>
-        <SplashScreen show={showSplash} />
-        {showTutorial && !showSplash && <Tutorial onComplete={completeTutorial} />}
-        <Routes>
-          {isAdmin ? (
-            <Route element={<AdminLayout />}>
-              <Route path="/" element={<AdminUsers />} />
-              <Route path="/admin" element={<AdminUsers />} />
-              <Route path="/admin/orders" element={<AdminOrders />} />
-              <Route path="/admin/reviews" element={<AdminReviews />} />
-              <Route path="/admin/verifications" element={<AdminVerifications />} />
-              <Route path="/admin/support" element={<AdminSupport />} />
-            </Route>
-          ) : (
-            <Route element={<AppLayout />}>
-              <Route path="/" element={<Home />} />
+      <SplashScreen show={showSplash} />
+      {showTutorial && !showSplash && <Tutorial onComplete={completeTutorial} />}
+      <Routes>
+        {isAdmin ? (
+          <Route element={<AdminLayout />}>
+            <Route path="/" element={<AdminUsers />} />
+            <Route path="/admin" element={<AdminUsers />} />
+            <Route path="/admin/orders" element={<AdminOrders />} />
+            <Route path="/admin/reviews" element={<AdminReviews />} />
+            <Route path="/admin/verifications" element={<AdminVerifications />} />
+            <Route path="/admin/support" element={<AdminSupport />} />
+          </Route>
+        ) : (
+          <Route element={<AppLayout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/order/:id" element={<OrderDetail />} />
+            <Route path="/public-profile" element={<PublicProfile />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
               <Route path="/add-order" element={<AddOrder />} />
               <Route path="/orders" element={<Orders />} />
-              <Route path="/order/:id" element={<OrderDetail />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/public-profile" element={<PublicProfile />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/verification" element={<Verification />} />
               <Route path="/support" element={<Support />} />
-              <Route path="/terms" element={<Terms />} />
             </Route>
-          )}
+          </Route>
+        )}
+        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
           <Route path="/chat/:orderId" element={<Chat />} />
           <Route path="/chats" element={<ChatList />} />
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
-      </LocationGate>
+        </Route>
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
     </LocationProvider>
   );
 }
@@ -118,12 +120,11 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
-            <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-              <Route path="/*" element={<AppShell />} />
-            </Route>
+            <Route path="/*" element={<AppShell />} />
           </Routes>
         </Router>
         <Toaster />
+        <InstallPrompt />
       </QueryClientProvider>
     </AuthProvider>
   );
