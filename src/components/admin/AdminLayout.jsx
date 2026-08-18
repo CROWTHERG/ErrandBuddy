@@ -1,6 +1,7 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Package, Users, ClipboardList, Star, Shield, HelpCircle } from 'lucide-react';
+import { Package, Users, ClipboardList, Star, Shield, HelpCircle, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { base44 } from '@/api/base44Client';
 
 const adminTabs = [
   { path: '/admin', icon: Users, label: 'Users' },
@@ -21,6 +22,9 @@ export default function AdminLayout() {
             <Package className="w-4 h-4 text-primary-foreground" />
           </div>
           <h1 className="text-lg font-bold">Errand Buddy <span className="text-xs text-muted-foreground font-normal">Admin</span></h1>
+          <button onClick={() => base44.auth.logout()} className="ml-auto flex items-center gap-1 text-sm text-muted-foreground hover:text-destructive transition-colors">
+            <LogOut className="w-4 h-4" /> Logout
+          </button>
         </div>
       </header>
       <main className="max-w-4xl mx-auto pb-20">

@@ -14,7 +14,12 @@ export default function Home() {
 
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ['orders', 'open'],
-    queryFn: () => base44.entities.Order.filter({ status: 'open' }, '-created_date', 50),
+    queryFn: async () => {
+      const result = await base44.entities.Order.filter({ status: 'open' }, '-created_date', 50);
+      // Guard against non-array responses (seen on native/Capacitor builds)
+      if (Array.isArray(result)) return result;
+      return result?.data ?? result?.results ?? result?.items ?? [];
+    },
   });
 
   const filtered = orders.filter(o => {

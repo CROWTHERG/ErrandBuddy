@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Send, Loader2, CheckCircle, Clock } from 'lucide-react';
 import { toast } from 'sonner';
+import LoginPrompt from '@/components/LoginPrompt';
 
 export default function Support() {
   const { user } = useAuth();
@@ -24,6 +25,8 @@ export default function Support() {
     queryFn: () => base44.entities.SupportTicket.filter({ user_email: user?.email }, '-created_date', 50),
     enabled: !!user,
   });
+
+  if (!user) return <LoginPrompt title="Login Required" message="Log in to get support." />;
 
   const handleSubmit = async () => {
     if (!subject || !message) { toast.error('Please fill all fields'); return; }

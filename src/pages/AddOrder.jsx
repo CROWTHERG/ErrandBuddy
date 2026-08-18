@@ -11,6 +11,7 @@ import { Card } from '@/components/ui/card';
 import { MapPin, DollarSign, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import PaymentMethodPicker from '@/components/orders/PaymentMethodPicker';
+import LoginPrompt from '@/components/LoginPrompt';
 
 export default function AddOrder() {
   const { user } = useAuth();
@@ -35,6 +36,8 @@ export default function AddOrder() {
   useEffect(() => {
     if (currency) setForm((f) => ({ ...f, currency }));
   }, [currency]);
+
+  if (!user) return <LoginPrompt title="Login Required" message="Log in to post an errand." />;
 
   const update = (field, value) => setForm({ ...form, [field]: value });
 

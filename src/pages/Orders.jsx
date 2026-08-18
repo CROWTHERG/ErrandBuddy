@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import OrderCard from '@/components/orders/OrderCard';
 import { Loader2 } from 'lucide-react';
 import { isOrderExpired } from '@/lib/orderUtils';
+import LoginPrompt from '@/components/LoginPrompt';
 
 export default function Orders() {
   const { user } = useAuth();
@@ -19,6 +20,8 @@ export default function Orders() {
   const picked = allOrders.filter(o => o.runner_email === user?.email && o.status === 'completed' && !isOrderExpired(o));
   const doing = allOrders.filter(o => o.runner_email === user?.email && (o.status === 'accepted' || o.status === 'in_progress') && !isOrderExpired(o));
   const history = allOrders.filter(o => (o.creator_email === user?.email || o.runner_email === user?.email) && isOrderExpired(o));
+
+  if (!user) return <LoginPrompt title="Login Required" message="Log in to view your orders." />;
 
   if (isLoading) {
     return (

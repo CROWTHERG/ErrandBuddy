@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClientInstance } from '@/lib/query-client';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
-import ProtectedRoute from '@/components/ProtectedRoute';
 import { LocationProvider } from '@/lib/LocationContext';
 import { base44 } from '@/api/base44Client';
 
@@ -42,12 +41,11 @@ import AdminLayout from '@/components/admin/AdminLayout';
 import SplashScreen from '@/components/SplashScreen';
 import Tutorial from '@/components/Tutorial';
 import NotificationListener from '@/components/NotificationListener';
-import InstallPrompt from '@/components/InstallPrompt';
 
 const ADMIN_EMAIL = 'ajayihammed356@gmail.com';
 
 function AppShell() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [showSplash, setShowSplash] = useState(true);
   const [showTutorial, setShowTutorial] = useState(false);
 
@@ -68,6 +66,12 @@ function AppShell() {
   };
 
   const isAdmin = user?.email === ADMIN_EMAIL;
+
+  useEffect(() => {
+    if (user && !isAdmin && (user.banned || user.suspended)) {
+      logout();
+    }
+  }, [user, isAdmin, logout]);
 
   return (
     <LocationProvider>
@@ -90,20 +94,16 @@ function AppShell() {
             <Route path="/order/:id" element={<OrderDetail />} />
             <Route path="/public-profile" element={<PublicProfile />} />
             <Route path="/terms" element={<Terms />} />
-            <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-              <Route path="/add-order" element={<AddOrder />} />
-              <Route path="/orders" element={<Orders />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/verification" element={<Verification />} />
-              <Route path="/support" element={<Support />} />
-            </Route>
+            <Route path="/add-order" element={<AddOrder />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/verification" element={<Verification />} />
+            <Route path="/support" element={<Support />} />
           </Route>
         )}
-        <Route element={<ProtectedRoute unauthenticatedElement={<Navigate to="/login" replace />} />}>
-          <Route path="/chat/:orderId" element={<Chat />} />
-          <Route path="/chats" element={<ChatList />} />
-        </Route>
+        <Route path="/chat/:orderId" element={<Chat />} />
+        <Route path="/chats" element={<ChatList />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </LocationProvider>
@@ -124,7 +124,6 @@ function App() {
           </Routes>
         </Router>
         <Toaster />
-        <InstallPrompt />
       </QueryClientProvider>
     </AuthProvider>
   );

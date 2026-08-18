@@ -2,15 +2,47 @@
   "name": "User",
   "type": "object",
   "properties": {
-    "role": { "type": "string", "enum": ["user", "admin"], "default": "user" },
-    "profile_picture": { "type": "string" },
-    "phone": { "type": "string" },
-    "bio": { "type": "string" },
-    "city": { "type": "string" },
-    "country": { "type": "string" },
-    "latitude": { "type": "number" },
-    "longitude": { "type": "number" },
-    "verified": { "type": "boolean", "default": false },
-    "tutorial_completed": { "type": "boolean", "default": false }
+    "role": {
+      "type": "string",
+      "enum": ["user", "admin"],
+      "default": "user"
+    },
+    "profile_picture": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "bio": {
+      "type": "string"
+    },
+    "city": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "latitude": {
+      "type": "number"
+    },
+    "longitude": {
+      "type": "number"
+    },
+    "verified": {
+      "type": "boolean",
+      "default": false
+    },
+    "tutorial_completed": {
+      "type": "boolean",
+      "default": false
+    },
+    "banned": {
+      "type": "boolean",
+      "default": false
+    },
+    "suspended": {
+      "type": "boolean",
+      "default": false
+    }
   }
 }

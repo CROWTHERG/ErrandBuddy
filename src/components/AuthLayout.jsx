@@ -9,7 +9,15 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
   // after logout, since Base44's auth backend ignores our redirect URL),
   // immediately forward to the real production domain, preserving the
   // path and any query params (like a reset token).
+  //
+  // Skip this entirely inside the native app (Capacitor) — there, the
+  // WebView always runs on "localhost", which will never match
+  // CANONICAL_HOST, so without this guard it would incorrectly treat
+  // every load as "wrong domain" and hand off to the system browser.
   useEffect(() => {
+    const isNative = window.Capacitor?.isNativePlatform?.() === true;
+    if (isNative) return;
+
     if (window.location.hostname !== CANONICAL_HOST) {
       window.location.replace(
         `https://${CANONICAL_HOST}${window.location.pathname}${window.location.search}`

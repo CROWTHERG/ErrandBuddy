@@ -53,6 +53,7 @@ export default function OrderDetail() {
   const canComplete = isRunner && order.status === 'accepted';
   const canRateRunner = isCreator && order.status === 'completed' && !order.creator_rated && order.runner_email;
   const canChat = (isCreator || isRunner) && order.runner_email && order.status !== 'open';
+  const canCancel = isCreator && (order.status === 'open' || order.status === 'accepted');
 
   const handleAccept = async () => {
     if (!user) {
@@ -68,6 +69,7 @@ export default function OrderDetail() {
     toast.success('Order accepted!');
     queryClient.invalidateQueries({ queryKey: ['order', id] });
     setActionLoading(false);
+
     base44.integrations.Core.SendEmail({
       to: order.creator_email,
       subject: `Your errand "${order.title}" was accepted!`,
@@ -89,11 +91,20 @@ export default function OrderDetail() {
     toast.success('Payment verified! Order completed.');
     queryClient.invalidateQueries({ queryKey: ['order', id] });
     setActionLoading(false);
+
     base44.integrations.Core.SendEmail({
       to: order.creator_email,
       subject: `Your errand "${order.title}" is completed!`,
       body: `Hi ${order.creator_name || 'there'},\n\nYour errand "${order.title}" has been marked as completed and payment has been verified.\n\nDon't forget to rate your runner on Errand Buddy!`,
     }).catch(() => {});
+  };
+
+  const handleCancel = async () => {
+    setActionLoading(true);
+    await base44.entities.Order.update(order.id, { status: 'cancelled' });
+    toast.success('Order cancelled');
+    queryClient.invalidateQueries({ queryKey: ['order', id] });
+    setActionLoading(false);
   };
 
   const mapCenter = location || (order.pickup_lat ? { lat: order.pickup_lat, lng: order.pickup_lng } : null);
@@ -223,6 +234,11 @@ export default function OrderDetail() {
                 <MessageCircle className="w-5 h-5 mr-2" /> Chat
               </Button>
             </Link>
+          )}
+          {canCancel && (
+            <Button onClick={handleCancel} disabled={actionLoading} variant="destructive" className="w-full h-12 rounded-xl">
+              {actionLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Cancel Order'}
+            </Button>
           )}
         </div>
       </div>

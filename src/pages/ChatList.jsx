@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { ArrowLeft, MessageCircle, Loader2 } from 'lucide-react';
 import { format } from 'date-fns';
+import LoginPrompt from '@/components/LoginPrompt';
 
 export default function ChatList() {
   const { user } = useAuth();
@@ -20,6 +21,8 @@ export default function ChatList() {
     (o.creator_email === user?.email || o.runner_email === user?.email) &&
     o.runner_email && o.status !== 'open'
   );
+
+  if (!user) return <LoginPrompt title="Login Required" message="Log in to view your chats." />;
 
   return (
     <div className="px-4 py-4 max-w-lg mx-auto">

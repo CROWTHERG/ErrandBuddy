@@ -20,9 +20,7 @@ export default function AppHeader() {
         <Link to="/chats" className="p-2 rounded-full hover:bg-muted transition-colors relative">
           <MessageCircle className="w-5 h-5 text-muted-foreground" />
           {unreadCount > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold flex items-center justify-center">
-              {unreadCount > 99 ? '99+' : unreadCount}
-            </span>
+            <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-destructive border-2 border-card" />
           )}
         </Link>
       </div>

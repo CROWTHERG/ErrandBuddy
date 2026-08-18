@@ -1,0 +1,15 @@
+{
+  "name": "BannedPhone",
+  "type": "object",
+  "properties": {
+    "phone": {
+      "type": "string",
+      "description": "Phone number of a banned user"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email of the banned user"
+    }
+  },
+  "required": ["phone"]
+}

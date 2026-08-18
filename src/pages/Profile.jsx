@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import { MapPin, Settings, Shield, HelpCircle, FileText, LogOut, CheckCircle, Package, Star } from 'lucide-react';
 import LiveMap from '@/components/orders/LiveMap';
 import ReputationCard from '@/components/profile/ReputationCard';
+import LoginPrompt from '@/components/LoginPrompt';
 
 export default function Profile() {
   const { user, logout } = useAuth();
@@ -39,6 +40,8 @@ export default function Profile() {
   const avgRating = reviews.length ? (reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1) : 'N/A';
 
   const initials = (user?.full_name || user?.email || '?').slice(0, 2).toUpperCase();
+
+  if (!user) return <LoginPrompt title="Login Required" message="Log in to view your profile." />;
 
   return (
     <div className="px-4 py-4">

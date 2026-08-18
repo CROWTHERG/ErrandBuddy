@@ -1,4 +1,4 @@
-package com.crowthertech.errandbuddy;
+package techcrowther.errandbuddy.app;
 
 import com.getcapacitor.BridgeActivity;
 

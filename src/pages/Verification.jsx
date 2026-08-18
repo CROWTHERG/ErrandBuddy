@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Upload, Shield, Loader2, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { toast } from 'sonner';
+import LoginPrompt from '@/components/LoginPrompt';
 
 export default function Verification() {
   const { user } = useAuth();
@@ -23,6 +24,8 @@ export default function Verification() {
   });
 
   const latest = verifications[0];
+
+  if (!user) return <LoginPrompt title="Login Required" message="Log in to verify your identity." />;
 
   const handleUpload = async (e) => {
     const file = e.target.files[0];

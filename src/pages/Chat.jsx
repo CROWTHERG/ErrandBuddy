@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Send, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
+import LoginPrompt from '@/components/LoginPrompt';
 
 export default function Chat() {
   const { orderId } = useParams();
@@ -46,6 +47,8 @@ export default function Chat() {
       })
       .catch(() => {});
   }, [messages, user, queryClient]);
+
+  if (!user) return <LoginPrompt title="Login Required" message="Log in to view this chat." />;
 
   const otherParty = order?.creator_email === user?.email ? order?.runner_name : order?.creator_name;
 

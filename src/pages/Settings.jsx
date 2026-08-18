@@ -11,6 +11,7 @@ import { ArrowLeft, Camera, Loader2 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { toast } from 'sonner';
 import DeleteAccountDialog from '@/components/DeleteAccountDialog';
+import LoginPrompt from '@/components/LoginPrompt';
 
 export default function Settings() {
   const { user } = useAuth();
@@ -22,6 +23,8 @@ export default function Settings() {
     bio: user?.bio || '',
     profile_picture: user?.profile_picture || '',
   });
+
+  if (!user) return <LoginPrompt title="Login Required" message="Log in to access your settings." />;
 
   const handlePictureUpload = async (e) => {
     const file = e.target.files[0];
@@ -35,6 +38,7 @@ export default function Settings() {
   const handleSave = async () => {
     setLoading(true);
     const updateData = { phone: form.phone, bio: form.bio, profile_picture: form.profile_picture };
+    // If picture changed, remove verification
     if (form.profile_picture !== (user?.profile_picture || '') && user?.verified) {
       updateData.verified = false;
       toast.info('Profile picture changed — verification has been reset.');
